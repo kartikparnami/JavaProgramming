@@ -1,67 +1,55 @@
 /*
-Question link: https://www.interviewbit.com/problems/maxspprod/
+Question link: https://www.interviewbit.com/problems/n3-repeat-number/
  */
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Stack;
+import java.util.List;
 
 class Solution {
-    public int maxSpecialProduct(ArrayList<Integer> A) {
-        Stack<Long> st = new Stack<>();
-        Long[] next = new Long[A.size()];
-        Arrays.fill(next, new Long(0));
-        Long[] prev = new Long[A.size()];
-        Arrays.fill(prev, new Long(0));
-        st.push(new Long(A.size() - 1));
-        for (long i = A.size() - 2; i >= 0; i -= 1) {
-            Long num = new Long(A.get(new Long(i).intValue()));
-            while (!st.empty() && num >= new Long(A.get(st.peek().intValue()))) {
-                st.pop();
-            }
-            if (st.empty()) {
-                next[new Long(i).intValue()] = new Long(0);
+    public int repeatedNumber(final List<Integer> a) {
+        int count1 = 0, count2 = 0, first = Integer.MAX_VALUE, second = Integer.MAX_VALUE;
+        for (int i = 0; i < a.size(); i += 1) {
+            if (a.get(i) == first) {
+                count1 += 1;
+            } else if (a.get(i) == second) {
+                count2 += 1;
+            } else if (count1 == 0) {
+                count1 += 1;
+                first = a.get(i);
+            } else if (count2 == 0) {
+                count2 += 1;
+                second = a.get(i);
             } else {
-                next[new Long(i).intValue()] = st.peek();
+                count1 -= 1;
+                count2 -= 1;
             }
-            st.push(i);
         }
-        for (int i = 0; i < A.size(); i += 1) {
-            System.out.print(next[i] + " ");
-        }
-        System.out.println();
-        st.clear();
-        st.push(new Long(0));
-        for (long i = 1; i < A.size(); i += 1) {
-            Long num = new Long(A.get(new Long(i).intValue()));
-            while (!st.empty() && num >= new Long(A.get(st.peek().intValue()))) {
-                st.pop();
+        count1 = 0;
+        count2 = 0;
+        for (int i = 0; i < a.size(); i += 1) {
+            if (a.get(i) == first) {
+                count1 += 1;
             }
-            if (st.empty()) {
-                prev[new Long(i).intValue()] = new Long(0);
-            } else {
-                prev[new Long(i).intValue()] = st.peek();
+            if (a.get(i) == second) {
+                count2 += 1;
             }
-            st.push(i);
         }
-        for (int i = 0; i < A.size(); i += 1) {
-            System.out.print(prev[i] + " ");
+        if (count1 > a.size()/3) {
+            return first;
+        } else if (count2 > a.size()/3) {
+            return second;
+        } else {
+            return -1;
         }
-        System.out.println();
-        long maxSpecialProduct = 0;
-        for (int i = 0; i < A.size() - 1; i += 1) {
-            maxSpecialProduct = Math.max(next[i] * prev[i], maxSpecialProduct);
-        }
-        maxSpecialProduct = maxSpecialProduct % 1000000007;
-        return new Long(maxSpecialProduct).intValue();
     }
 }
 
 class Main {
     public static void main(String[] args) {
-        ArrayList<Integer> input = new ArrayList<>(Arrays.asList(1));
+        ArrayList<Integer> input = new ArrayList<>(Arrays.asList(1, 2, 2, 4));
         Solution sol = new Solution();
-        System.out.println(sol.maxSpecialProduct(input));
+        System.out.println(sol.repeatedNumber(input));
     }
 }
